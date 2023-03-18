@@ -36,10 +36,7 @@ jobs:
       run: |
         echo "================================================"
         echo "================================================"
-        echo "================================================"
-        echo "================================================"
         ls
-        echo "================================================"
         echo "================================================"
         echo "================================================"
         ls
@@ -49,28 +46,33 @@ jobs:
         gomobile bind -v -androidapi 19 -ldflags='-s -w' ./
         echo "================================================"
         echo "================================================"
-        echo "================================================"
-        echo "================================================"
         ls
-        echo "================================================"
-        echo "================================================"
-        echo "================================================"
-        echo "================================================"
-        ls
-        echo "================================================"
-        echo "================================================"
         echo "================================================"
         echo "================================================"
 
     - name: Set Release Version
       run: echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $GITHUB_ENV
 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        tag_name: ${{ env.RELEASE_VERSION }}
+        release_name: ${{ env.RELEASE_VERSION }}
+        body: |
+          This is a test release.
+
+    - name: Store Upload URL
+      run: echo "${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ env.UPLOAD_URL }}
         asset_path: ./libv2ray.aar
         asset_name: libv2ray.aar
         asset_content_type: application/octet-stream

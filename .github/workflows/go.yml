@@ -60,7 +60,7 @@ jobs:
         with:
           name: libxraylite.aar
           path: |
-            ./Xlibxraylite.aar
+            ./libxraylite.aar
 
       - name: Upload binaries to release t2
         uses: svenstaro/upload-release-action@v2

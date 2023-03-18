@@ -75,5 +75,4 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          libv2ray.aar
-
+          ./*

@@ -51,22 +51,13 @@ jobs:
 
 
 
-      - name: Upload Asset t2
-        id: upload_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./libxraylite.aar
-
-      - name: Upload files to Artifacts
+      - name: Upload files to Artifacts t2
         uses: actions/upload-artifact@v3
         with:
           name: libxraylite.aar
           path: |
             ./Xlibxraylite.aar
-            
+
       - name: Upload binaries to release t2
         uses: svenstaro/upload-release-action@v2
         if: github.event_name == 'release'

@@ -65,7 +65,7 @@ jobs:
       run: echo "RELEASE_VERSION=v$(date '+%Y%m%d')-release-1" >> $GITHUB_ENV
 
     - name: Create Release
-      uses: marvinpinto/action-automatic-releases@latest
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.RELESE_TOKEN }}
       with:
@@ -75,5 +75,5 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./libv2ray.aar
+          libv2ray.aar
 

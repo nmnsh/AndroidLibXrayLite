@@ -49,28 +49,29 @@ jobs:
         ls
         echo "================================================"
         echo "================================================"
-        
+
         echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $RUNNER_TEMP/release.env
 
     - name: Load Release Version
       id: release_env
       run: echo ::set-output name=release_version::$(cat $RUNNER_TEMP/release.env)
-    
-    - name: Upload libv2ray.aar
-      uses: actions/upload-release-asset@v1
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
+        tag_name: v1.0.0
+        release_name: Release 1.0.0
+        body: This is a test release.
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./libv2ray.aar
         asset_name: libv2ray.aar
         asset_content_type: application/octet-stream
-        upload_url: ${{ github.event.release.upload_url }}
-        github_token: ${{ secrets.RELEASE_TOKEN }}
-    
-    - name: Create Release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ steps.release_env.outputs.release_version }}
-        release_name: ${{ steps.release_env.outputs.release_version }}
-        body: This is a test release.
-        draft: false
-        prerelease: false
-        github_token: ${{ secrets.RELEASE_TOKEN }}

@@ -65,20 +65,12 @@ jobs:
     - name: Set Release Version
       run: echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $GITHUB_ENV
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: libv2ray
-        path: libv2ray.aar
-
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELESE_TOKEN }}
-      with:
-        artifacts: |
-          libv2ray
-        body: |
-          This is a test release.
-        tag_name: ${{ env.RELEASE_VERSION }}
-        release_name: ${{ env.RELEASE_VERSION }}
+  - name: Upload Release Asset
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: ./libv2ray.aar
+      asset_name: libv2ray.aar
+      asset_content_type: application/octet-stream

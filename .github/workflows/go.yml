@@ -61,7 +61,7 @@ jobs:
         asset_content_type: application/octet-stream
         upload_url: ${{ github.event.release.upload_url }}
         # Use the RELEASE_TOKEN secret to authenticate the upload
-        github_token: ${{ secrets.RELEASE_TOKEN }}
+        token: ${{ secrets.RELEASE_TOKEN }}
     
     - name: Create Release
       uses: actions/create-release@v1
@@ -72,4 +72,4 @@ jobs:
         draft: false
         prerelease: false
         # Use the RELEASE_TOKEN secret to authenticate the release creation
-        github_token: ${{ secrets.RELEASE_TOKEN }}
+        token: ${{ secrets.RELEASE_TOKEN }}

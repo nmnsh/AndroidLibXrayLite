@@ -45,7 +45,8 @@ jobs:
         ls
         gomobile init
         go mod tidy -v
-        gomobile bind -v -androidapi 19 -ldflags='-s -w' ./
+        mkdir build
+        gomobile bind -v -androidapi 19 -ldflags='-s -w' ./build
         echo "================================================"
         echo "================================================"
         echo "================================================"
@@ -62,7 +63,7 @@ jobs:
         echo "================================================"
 
     - name: Set Release Version
-      run: echo "RELEASE_VERSION=v$(date '+%Y%m%d')-release-1" >> $GITHUB_ENV
+      run: echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $GITHUB_ENV
 
     - name: Create Release
       uses: actions/create-release@v1
@@ -75,8 +76,8 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          *
-          ./*
-          /*
+          build
+          ./build
+          /build
 
 

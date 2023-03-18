@@ -66,8 +66,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELESE_TOKEN }}
       with:
-        tag_name: "v$(date '+%Y%m%d')-release"
-        release_name: "Release $(date '+%Y-%m-%d')"
+        tag_name: v$(date '+%Y%m%d')-release-1
+        release_name: Release v$(date '+%Y-%m-%d')-1
         body: This is a test release.
         draft: false
         prerelease: false

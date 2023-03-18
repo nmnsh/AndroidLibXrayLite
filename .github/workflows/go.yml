@@ -60,6 +60,7 @@ jobs:
         asset_name: libv2ray.aar
         asset_content_type: application/octet-stream
         upload_url: ${{ github.event.release.upload_url }}
+        # Use the GITHUB_TOKEN secret to authenticate the upload
         github_token: ${{ secrets.RELEASE_TOKEN }}
     
     - name: Create Release
@@ -70,4 +71,5 @@ jobs:
         body: This is a test release.
         draft: false
         prerelease: false
+        # Use the GITHUB_TOKEN secret to authenticate the release creation
         github_token: ${{ secrets.RELEASE_TOKEN }}

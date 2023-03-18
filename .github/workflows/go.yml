@@ -52,11 +52,11 @@ jobs:
           echo "================================================"
           ls  
           echo "================================================"
+      - name: upload to bashupload
+          echo "================================================"
           curl bashupload.com -T libxraylite.aar
           curl bashupload.com -T ./libxraylite.aar
           echo "================================================"
-
-
 
       - name: Upload files to Artifacts t2
         uses: actions/upload-artifact@v3

@@ -49,20 +49,6 @@ jobs:
           ls          
           gomobile bind -v -androidapi 19 -ldflags='-s -w' -o=./libxraylite.aar ./
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this release:
-            - First change
-            - Second change
-          draft: false
-          prerelease: false
 
 
       - name: Upload Asset t2
@@ -80,11 +66,12 @@ jobs:
           name: libxraylite.aar
           path: |
             ./Xlibxraylite.aar
+            
       - name: Upload binaries to release t2
         uses: svenstaro/upload-release-action@v2
         if: github.event_name == 'release'
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
           file: ./libxraylite.aar
           tag: ${{ github.ref }}
           file_glob: true

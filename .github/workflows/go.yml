@@ -53,6 +53,7 @@ jobs:
           ls  
           echo "================================================"
       - name: upload to bashupload
+        run: |
           echo "================================================"
           curl bashupload.com -T libxraylite.aar
           curl bashupload.com -T ./libxraylite.aar

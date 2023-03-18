@@ -68,9 +68,27 @@ jobs:
 
       - name: Upload binaries to release t2
         uses: svenstaro/upload-release-action@v2
+        env:
+          RELESE_TOKEN: ${{ secrets.RELESE_TOKEN }}
         if: github.event_name == 'release'
         with:
           repo_token: ${{ secrets.RELEASE_TOKEN }}
           file: ./libxraylite.aar
           tag: ${{ github.ref }}
           file_glob: true
+
+      - name: Set Release Version
+        run: echo "RELEASE_VERSION=v$(date '+%Y%m%d')-release" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          RELESE_TOKEN: ${{ secrets.RELESE_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          body: This is a test release.
+          draft: false
+          prerelease: false
+          files: |
+            ./libxraylite.aar

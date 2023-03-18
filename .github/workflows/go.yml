@@ -1,75 +1,57 @@
-name: Build AndroidLibXrayLite and Release
+name: Build and release Xray Lite for Android
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        distribution: adopt
-        java-version: '11'
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.19'
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
-      with:
-        sdk-version: '31.0.0'
-        ndk-version: '23.1.7779620'
-        android-platform: 'android-30'
+      - name: Set up gomobile
+        run: go install golang.org/x/mobile/cmd/gomobile@latest
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.19'
+      - name: Build AndroidLibXrayLite
+        run: |
+          gomobile init
+          echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $RUNNER_TEMP/release.env
+          go mod tidy -v
+          mkdir build
+          gomobile bind -v -target=android -tags=jsoniter -o build/libxraylite.aar ./
+          cp $RUNNER_TEMP/release.env ./build/release.env
 
-    - name: Set up gomobile
-      run: go install golang.org/x/mobile/cmd/gomobile@latest
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          RELEASE_VERSION: ${{ secrets.RELEASE_VERSION }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          body: |
+            Changes in this release:
+            - First change
+            - Second change
+          draft: false
+          prerelease: false
 
-    - name: Build AndroidLibXrayLite
-      run: |
-        echo "================================================"
-        echo "================================================"
-        echo "================================================"
-        echo "================================================"
-        ls
-        echo "================================================"
-        echo "================================================"
-        echo "================================================"
-        ls
-        gomobile init
-        echo "RELEASE_VERSION=v$(date '+%Y-%m-%d')-release" >> $RUNNER_TEMP/release.env
-        go mod tidy -v
-        mkdir build
-        gomobile bind -v -androidapi 30 -ldflags='-s -w' ./
-
-    - name: Load Release Version
-      id: release_env
-      run: echo ::set-output name=release_version::$(cat $RUNNER_TEMP/release.env)
-    
-    - name: Upload libv2ray.aar
-      uses: actions/upload-release-asset@v1
-      with:
-        asset_path: ./libv2ray.aar
-        asset_name: libv2ray.aar
-        asset_content_type: application/octet-stream
-        upload_url: ${{ github.event.release.upload_url }}
-        # Use the RELEASE_TOKEN secret to authenticate the upload
-        token: ${{ secrets.RELEASE_TOKEN }}
-    
-    - name: Create Release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ steps.release_env.outputs.release_version }}
-        release_name: ${{ steps.release_env.outputs.release_version }}
-        body: This is a test release.
-        draft: false
-        prerelease: false
-        # Use the RELEASE_TOKEN secret to authenticate the release creation
-        token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Upload Asset
+        id: upload_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          RELEASE_VERSION: ${{ secrets.RELEASE_VERSION }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/libxraylite.aar
+          asset_name: libxraylite.aar
+          asset_content_type: application/octet-stream

@@ -18,9 +18,12 @@ jobs:
         with:
           java-version: '11'
 
-      - name: Set up environment variables
-        run: |
-          echo "export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/21.4.7075529" >> $GITHUB_ENV
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-version: '31.0.0'
+          ndk-version: '23.1.7779620'
+          android-platform: 'android-19'
 
       - name: Set up gomobile
         run: |
@@ -34,7 +37,6 @@ jobs:
           echo "================================================"
           echo "================================================"
           ls 
-          gomobile init
           go mod tidy -v
           echo "================================================"
           echo "================================================"
@@ -64,4 +66,4 @@ jobs:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libxraylite.a
+          asset_path: ./build/libxraylite.aar
